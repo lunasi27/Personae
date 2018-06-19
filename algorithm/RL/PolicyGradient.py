@@ -11,6 +11,7 @@ from checkpoints import CHECKPOINTS_DIR
 from base.algorithm.model import BaseRLTFModel
 from helper.args_parser import model_launcher_parser
 from helper.data_logger import generate_algorithm_logger, generate_market_logger
+import pdb
 
 
 class Algorithm(BaseRLTFModel):
@@ -124,24 +125,29 @@ class Algorithm(BaseRLTFModel):
 
 def main(args):
     mode = args.mode
-    # mode = 'test'
-    # codes = args.codes
-    codes = ["600036"]
+    #mode = 'test'
+    codes = args.codes
+    #codes = ["600036"]
+    #codes = ["eos_usdt"]
     # codes = ["600036", "601998"]
     # codes = ["AU88", "RB88", "CU88", "AL88"]
     # codes = ["T9999"]
-    market = args.market
+    market = 'k15m'
+    #market = args.market
     # market = 'future'
     # episode = args.episode
-    episode = 20
-    training_data_ratio = 0.95
+    episode = 800
+    training_data_ratio = 0.8
     # training_data_ratio = args.training_data_ratio
+
+    #pdb.set_trace()
 
     model_name = os.path.basename(__file__).split('.')[0]
 
-    env = Market(codes, start_date="2012-01-01", end_date="2018-01-01", **{
+    #env = Market(codes, start_date="2018-06-04", end_date="2018-06-12", **{
+    env = Market(codes, start_date=args.start, end_date=args.end, **{
         "market": market,
-        "mix_index_state": True,
+        "mix_index_state": False,
         "logger": generate_market_logger(model_name),
         "training_data_ratio": training_data_ratio,
     })

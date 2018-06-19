@@ -5,7 +5,7 @@ import numpy as np
 import math
 
 from base.env.trader import Trader
-from base.model.document import Stock, Future
+from base.model.document import Stock, Future, K15m
 from sklearn.preprocessing import StandardScaler
 
 
@@ -109,7 +109,15 @@ class Market(object):
         self.state_codes = self.codes + self.index_codes
         self.scaler = [scaler() for _ in self.state_codes]
         self.trader = Trader(self, cash=self.init_cash)
-        self.doc_class = Stock if self.m_type == 'stock' else Future
+        #self.doc_class = Stock if self.m_type == 'stock' else \ 
+        #                 Future if self.m_type == 'future' else Vcoin
+        if self.m_type == 'stock':
+            self.doc_class = Stock
+        elif self.m_type == 'future':
+            self.doc_class = Future
+        else:
+            self.doc_class = K15m
+        #self.doc_class = Stock if self.m_type == 'stock' else Future
 
     def _init_data(self, start_date, end_date):
         self._init_data_frames(start_date, end_date)
