@@ -38,6 +38,10 @@ def transform(pair, k_cls):
         buf.append(price.last)
         volume += price.quoteVolume
         if len(buf) == k_cls.buf_size:
+            # If close price is zero, then ignore this price
+            if buf[-1] == 0:
+                continue
+            # Use minute to record date
             dt = datetime.datetime(price.date.year, price.date.month, price.date.day, price.date.hour, price.date.minute)
             m15 = k_cls(code=pair, open=buf[0], high=max(buf), low=min(buf), close=buf[-1], volume=volume, date=dt)
             m15.save()
@@ -59,7 +63,7 @@ if __name__ == '__main__':
     print('Loading finished')
     pool.close()
     pool.join()
-    # Remove new added coins
+    # Remove new added coins (incomplete data)
     flag_cnt = K15m.objects(code='btc_usdt').count()
     for pair in pair_list:
         cnt = K15m.objects(code=pair).count()
