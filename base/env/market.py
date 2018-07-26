@@ -303,7 +303,9 @@ class Market(object):
         stock_next = self._origin_data(stock_code, self.next_date)
         # Execute transaction.
         action = self.trader.action_by_code(action_code)
-        action(stock_code, stock, 100, stock_next)
+        amount = self.gen_amount(stock)
+        action(stock_code, stock, amount, stock_next)
+        #action(stock_code, stock, 100, stock_next)
         # Init episode status.
         episode_done = self.Running
         # Add action times.
@@ -356,3 +358,7 @@ class Market(object):
             if self.mix_trader_state:
                 data_dim += (2 + self.code_count)
         return data_dim
+
+    def gen_amount(self, stock):
+        total_can_buy = int(math.floor(self.init_cash / stock.close))
+        return int(math.floor(total_can_buy / 100))
